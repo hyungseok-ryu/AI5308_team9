@@ -18,7 +18,7 @@ with st.spinner(text="Loading..."):
 
 # 페이지 헤더, 서브헤더 제목 설정
 st.header("👋Welcome")
-st.subheader("Hello. We are teim9")
+st.subheader("Hello. We are team9")
 
 
 
