@@ -6,6 +6,7 @@ from PIL import Image
 import numpy as np
 import cv2
 import av
+import pandas
 from yolov5.utils.plots import Annotator, colors
 
 class YOLOv5VideoTransformer(VideoTransformerBase):
@@ -19,16 +20,16 @@ class YOLOv5VideoTransformer(VideoTransformerBase):
 
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        pil_img = Image.fromarray(img_rgb)
-        input_img = self.preprocess(pil_img).unsqueeze(0)
+        # img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        # pil_img = Image.fromarray(img_rgb)
+        # input_img = self.preprocess(pil_img).unsqueeze(0)
         with torch.no_grad():
-            results = self.model(input_img)
+            results = self.model(img)
 
         labels = results.xyxy[0][:, -1].numpy()
         boxes = results.xyxy[0][:, :-1].numpy()
 
-        annotator = Annotator(img_rgb)
+        annotator = Annotator(img)
         for i, (label, box) in enumerate(zip(labels, boxes)):
             color = colors(int(label))
             annotator.box_label(box, f"{label}: {box[4]:.2f}", color=color)
