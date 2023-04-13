@@ -13,24 +13,19 @@ class YOLOv5VideoTransformer(VideoTransformerBase):
     def __init__(self):
         self.model = torch.hub.load("ultralytics/yolov5", "yolov5s", pretrained=True)
         self.model.eval()
-        self.preprocess = transforms.Compose([
-            transforms.Resize((640, 640)),
-            transforms.ToTensor(),
-        ])
         self.names = self.model.names
 
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         img = frame.to_ndarray(format="bgr24")
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        pil_img = Image.fromarray(img_rgb)
         # input_img = self.preprocess(pil_img).unsqueeze(0)
         with torch.no_grad():
-            results = self.model(pil_img)
+            results = self.model(img_rgb)
 
         labels = results.xyxy[0][:, -1].numpy()
         boxes = results.xyxy[0][:, :-1].numpy()
 
-        annotator = Annotator(img)
+        annotator = Annotator(img_rgb)
         for i, (label, box) in enumerate(zip(labels, boxes)):
             class_name = self.names[int(label)]
             color = colors(int(label))
