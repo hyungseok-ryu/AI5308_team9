@@ -8,7 +8,7 @@ import cv2
 import av
 import pandas
 from ultralytics import YOLO
-from yolov5.utils.plots import Annotator, colors
+from ultralytics.yolo.utils.plotting import Annotator, colors
 
 class YOLOv8VideoTransformer(VideoTransformerBase):
     def __init__(self):
@@ -26,13 +26,13 @@ class YOLOv8VideoTransformer(VideoTransformerBase):
 
         labels = results[0].boxes.cls.numpy()
         boxes = results[0].boxes.xyxy.numpy()
-
+        confidences = results[0].boxes.conf
+        
         annotator = Annotator(img_rgb)
-        for i, (label, box) in enumerate(zip(labels, boxes)):
+        for i, (label, box, confidence) in enumerate(zip(labels, boxes, confidences)):
             class_name = self.names[int(label)] 
             color = colors(int(label))
-            annotator.box_label(box, f"{class_name}: {labels[i]:.2f}", color=color)
-
+            annotator.box_label(box, f"{class_name}: {confidence:.2f}", color=color)
         result_img = cv2.cvtColor(annotator.im, cv2.COLOR_RGB2BGR)
         return av.VideoFrame.from_ndarray(result_img, format="bgr24")
 
