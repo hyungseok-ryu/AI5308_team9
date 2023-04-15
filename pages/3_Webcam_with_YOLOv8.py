@@ -1,5 +1,5 @@
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, ClientSettings, VideoTransformerBase
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoTransformerBase
 import torch
 from torchvision import transforms
 from PIL import Image
@@ -40,4 +40,8 @@ class YOLOv8VideoTransformer(VideoTransformerBase):
 st.header("Object Detection with YOLOv8")
 st.markdown("Click the 'Start' button below to access your webcam and see the object detection in real-time.")
 
-webrtc_ctx = webrtc_streamer(key="example", video_transformer_factory=YOLOv8VideoTransformer)
+webrtc_ctx = webrtc_streamer(key="YOLOv8",
+                             mode=WebRtcMode.SENDRECV,
+                             video_transformer_factory=YOLOv8VideoTransformer,
+                             media_stream_constraints={"video": True, "audio": False},
+                             async_processing=True,)
