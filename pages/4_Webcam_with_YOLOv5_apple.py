@@ -49,7 +49,7 @@ st.markdown("Click the 'Start' button below to access your webcam and see the ob
 
 webrtc_ctx = webrtc_streamer(key="YOLOv5", 
                              mode=WebRtcMode.SENDRECV,
-                             video_transformer_factory=YOLOv5VideoTransformer,
+                             video_processor_factory=YOLOv5VideoTransformer,
                              media_stream_constraints={"video": True, "audio": False},
                              async_processing=True,
                              )
