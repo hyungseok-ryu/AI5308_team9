@@ -1,5 +1,5 @@
 absl-py==1.4.0
-aioice>=0.6.18,<1.0.0
+aioice==0.7.5
 altair==4.2.2
 anyio==3.6.2
 appnope==0.1.3
